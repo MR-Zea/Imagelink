@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+<style>
+body { background:#0f172a; color:white; text-align:center; padding:50px; }
+input,button { padding:10px; margin:5px; border-radius:8px; border:none; }
+</style>
+</head>
+<body>
 
+<h1>Login</h1>
+
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<br>
+<button onclick="login()">Login</button>
+
+<script>
+const USER = "admin";
+const PASS = "12345";
+
+function login() {
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
+
+  if (u === USER && p === PASS) {
+    localStorage.setItem("login", "true");
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Salah!");
+  }
+}
+</script>
+
+</body>
+</html>
