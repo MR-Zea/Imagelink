@@ -1,36 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Login</title>
+<meta charset="UTF-8">
+<title>Gallery Upload</title>
+
 <style>
-body { background:#0f172a; color:white; text-align:center; padding:50px; }
-input,button { padding:10px; margin:5px; border-radius:8px; border:none; }
+body {
+  background: #0f172a;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+h1 {
+  margin: 20px;
+}
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.gallery img {
+  width: 200px;
+  margin: 10px;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+.gallery img:hover {
+  transform: scale(1.05);
+}
 </style>
 </head>
 <body>
 
-<h1>Login</h1>
+<h1>Gallery Gambar</h1>
 
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
-<br>
-<button onclick="login()">Login</button>
+<div class="gallery" id="gallery"></div>
 
 <script>
-const USER = "admin";
-const PASS = "12345";
+// GANTI INI
+const USER = "MR-Zea";
+const REPO = "imagelink";
+const FOLDER = "uploads";
 
-function login() {
-  const u = document.getElementById("user").value;
-  const p = document.getElementById("pass").value;
+async function loadImages() {
+  const api = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
 
-  if (u === USER && p === PASS) {
-    localStorage.setItem("login", "true");
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Salah!");
-  }
+  const res = await fetch(api);
+  const data = await res.json();
+
+  const gallery = document.getElementById("gallery");
+
+  data.forEach(file => {
+    if (file.type === "file") {
+      const img = document.createElement("img");
+      img.src = file.download_url;
+      gallery.appendChild(img);
+    }
+  });
 }
+
+loadImages();
 </script>
 
 </body>
