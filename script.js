@@ -3,9 +3,14 @@ const REPO = "MR-Zea/Imagelink";
 const BRANCH = "main";
 const PATH = "uploads/";
 
-document.getElementById("file").addEventListener("change", async function() {
-  const file = this.files[0];
-  if (!file) return;
+async function upload() {
+  const fileInput = document.getElementById("file");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert("Pilih gambar dulu!");
+    return;
+  }
 
   const reader = new FileReader();
 
@@ -28,8 +33,6 @@ document.getElementById("file").addEventListener("change", async function() {
       })
     });
 
-    const data = await res.json();
-
     const vercelLink = `https://${location.hostname}/uploads/${fileName}`;
 
     document.getElementById("result").innerHTML = `
@@ -40,4 +43,4 @@ document.getElementById("file").addEventListener("change", async function() {
   };
 
   reader.readAsDataURL(file);
-});
+}
