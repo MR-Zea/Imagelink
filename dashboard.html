@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+<style>
+body { background:#0f172a; color:white; text-align:center; padding:30px; }
+button,input { padding:10px; margin:10px; border-radius:8px; border:none; }
+img { max-width:300px; margin-top:15px; border-radius:10px; }
+</style>
+</head>
+<body>
 
+<h1>Upload Gambar</h1>
+
+<button onclick="logout()">Logout</button><br>
+
+<input type="file" id="file">
+
+<div id="result"></div>
+
+<script src="script.js"></script>
+
+<script>
+if (localStorage.getItem("login") !== "true") {
+  window.location.href = "index.html";
+}
+
+function logout(){
+  localStorage.removeItem("login");
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
