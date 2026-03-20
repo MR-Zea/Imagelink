@@ -57,6 +57,31 @@ h1 {
   max-height: 90%;
   border-radius: 10px;
 }
+
+  .item {
+  position: relative;
+  display: inline-block;
+}
+
+.copy-btn {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.item:hover .copy-btn {
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -84,38 +109,51 @@ async function loadFiles() {
 
   const gallery = document.getElementById("gallery");
 
-  data.forEach(file => {
-    if (file.type === "file") {
+data.forEach(file => {
+  if (file.type === "file") {
 
-      const url = file.download_url;
+    const url = file.download_url;
 
-      // ===== GAMBAR =====
-      if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-        const img = document.createElement("img");
-        img.src = url;
+    const container = document.createElement("div");
+    container.className = "item";
 
-        img.onclick = () => openPopup("img", url);
-
-        gallery.appendChild(img);
-      }
-
-      // ===== VIDEO =====
-      else if (file.name.match(/\.(mp4|webm|ogg)$/i)) {
-        const video = document.createElement("video");
-        video.src = url;
-        video.controls = true;
-
-        video.onmouseenter = () => video.play();
-        video.onmouseleave = () => video.pause();
-
-        video.onclick = () => openPopup("video", url);
-
-        gallery.appendChild(video);
-      }
-
+    // ===== GAMBAR =====
+    if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+      const img = document.createElement("img");
+      img.src = url;
+      img.onclick = () => openPopup("img", url);
+      container.appendChild(img);
     }
-  });
-}
+
+    // ===== VIDEO =====
+    else if (file.name.match(/\.(mp4|webm|ogg)$/i)) {
+      const video = document.createElement("video");
+      video.src = url;
+      video.controls = true;
+
+      video.onmouseenter = () => video.play();
+      video.onmouseleave = () => video.pause();
+
+      video.onclick = () => openPopup("video", url);
+      container.appendChild(video);
+    }
+
+    // ===== TOMBOL COPY =====
+    const btn = document.createElement("button");
+    btn.innerText = "Salin URL";
+    btn.className = "copy-btn";
+
+    btn.onclick = (e) => {
+      e.stopPropagation(); // biar gak buka popup
+      navigator.clipboard.writeText(url);
+      btn.innerText = "✔ Disalin!";
+      setTimeout(() => btn.innerText = "Salin URL", 1500);
+    };
+
+    container.appendChild(btn);
+    gallery.appendChild(container);
+  }
+});}
 
 // ===== POPUP =====
 function openPopup(type, url) {
