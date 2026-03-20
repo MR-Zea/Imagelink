@@ -11,30 +11,64 @@ body {
   font-family: Arial;
   text-align: center;
 }
+
 h1 {
   margin: 20px;
 }
+
 .gallery {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
-.gallery img {
+
+/* gambar & video */
+.gallery img,
+.gallery video {
   width: 200px;
   margin: 10px;
   border-radius: 10px;
   transition: 0.3s;
+  cursor: pointer;
 }
-.gallery img:hover {
+
+.gallery img:hover,
+.gallery video:hover {
   transform: scale(1.05);
+}
+
+/* popup fullscreen */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup img,
+.popup video {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
 }
 </style>
 </head>
 <body>
 
-<h1>Gallery Gambar</h1>
+<h1>Gallery Gambar & Video</h1>
 
 <div class="gallery" id="gallery"></div>
+
+<!-- popup -->
+<div class="popup" id="popup" onclick="closePopup()">
+  <div id="popupContent"></div>
+</div>
 
 <script>
 // GANTI INI
@@ -42,7 +76,7 @@ const USER = "MR-Zea";
 const REPO = "imagelink";
 const FOLDER = "uploads";
 
-async function loadImages() {
+async function loadFiles() {
   const api = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
 
   const res = await fetch(api);
@@ -52,14 +86,64 @@ async function loadImages() {
 
   data.forEach(file => {
     if (file.type === "file") {
-      const img = document.createElement("img");
-      img.src = file.download_url;
-      gallery.appendChild(img);
+
+      const url = file.download_url;
+
+      // ===== GAMBAR =====
+      if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        const img = document.createElement("img");
+        img.src = url;
+
+        img.onclick = () => openPopup("img", url);
+
+        gallery.appendChild(img);
+      }
+
+      // ===== VIDEO =====
+      else if (file.name.match(/\.(mp4|webm|ogg)$/i)) {
+        const video = document.createElement("video");
+        video.src = url;
+        video.controls = true;
+
+        video.onmouseenter = () => video.play();
+        video.onmouseleave = () => video.pause();
+
+        video.onclick = () => openPopup("video", url);
+
+        gallery.appendChild(video);
+      }
+
     }
   });
 }
 
-loadImages();
+// ===== POPUP =====
+function openPopup(type, url) {
+  const popup = document.getElementById("popup");
+  const content = document.getElementById("popupContent");
+
+  content.innerHTML = "";
+
+  if (type === "img") {
+    const img = document.createElement("img");
+    img.src = url;
+    content.appendChild(img);
+  } else {
+    const video = document.createElement("video");
+    video.src = url;
+    video.controls = true;
+    video.autoplay = true;
+    content.appendChild(video);
+  }
+
+  popup.style.display = "flex";
+}
+
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
+
+loadFiles();
 </script>
 
 </body>
